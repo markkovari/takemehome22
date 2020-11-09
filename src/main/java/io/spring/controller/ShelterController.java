@@ -1,11 +1,10 @@
 package io.spring.controller;
 
 
+import io.spring.model.Shelter;
 import io.spring.service.ShelterService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping({"shelters"})
@@ -21,4 +20,14 @@ public class ShelterController {
     public ResponseEntity<?> getShelters() {
         return ResponseEntity.ok(shelterService.findAll());
     }
+
+    @PostMapping("/")
+    public ResponseEntity<?> addShelter(@RequestBody(required = false) Shelter shelter) {
+        try {
+            return ResponseEntity.ok(shelterService.upsertForUser(shelter));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

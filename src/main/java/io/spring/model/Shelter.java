@@ -2,14 +2,16 @@ package io.spring.model;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Shelter {
@@ -20,9 +22,6 @@ public class Shelter {
 
     @OneToOne
     User owner;
-
-    @OneToMany
-    List<Shelter> shelters;
 
     @OneToOne
     Address address;

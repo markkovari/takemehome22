@@ -9,6 +9,7 @@ import io.spring.repository.UserRepository;
 import io.spring.service.ShelterService;
 import io.spring.util.exception.ShelterAlreadyExistsException;
 import io.spring.util.exception.ShelterIsNotEmptyException;
+import io.spring.util.security.AuthorizationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,23 +22,35 @@ public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
     private final UserRepository userRepository;
     private final AdopteeRepository adopteeRepository;
+    private final AuthorizationService authorizationService;
 
-    public ShelterServiceImpl(ShelterRepository shelterRepository, UserRepository userRepository, AdopteeRepository adopteeRepository) {
+    public ShelterServiceImpl(ShelterRepository shelterRepository,
+                              UserRepository userRepository,
+                              AdopteeRepository adopteeRepository,
+                              AuthorizationService authorizationService) {
         this.shelterRepository = shelterRepository;
         this.userRepository = userRepository;
         this.adopteeRepository = adopteeRepository;
+        this.authorizationService = authorizationService;
     }
 
-
     @Override
-    public Shelter saveForUser(Shelter shelter, User user) throws ShelterAlreadyExistsException {
+    public Shelter upsertForUser(Shelter shelter) throws ShelterAlreadyExistsException {
+        User user = authorizationService.getUserByLoggedIn().orElse(null);
+        if (user == null) {
+            throw new Error("Cannot find user");
+        }
         if (user.getShelter() != null) {
             throw new ShelterAlreadyExistsException("Shelter already exists for: " + user.getUsername());
         }
+        if (shelter == null || shelter.getId() == null) {
+            shelter = new Shelter();
+        }
         shelter.setOwner(user);
         user.setShelter(shelter);
+        Shelter sh = shelterRepository.save(shelter);
         userRepository.save(user);
-        return shelterRepository.save(shelter);
+        return sh;
     }
 
     @Override

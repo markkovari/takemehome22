@@ -28,8 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         getTokenString(request.getHeader(header)).flatMap(token -> jwtService.getSubFromToken(token)).ifPresent(id -> {
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 try {
-                    Long subbedId = Long.valueOf(id);
-                    userRepository.findById(subbedId).ifPresent(user -> {
+                    userRepository.findByUsername(id).ifPresent(user -> {
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                                 user,
                                 null,
