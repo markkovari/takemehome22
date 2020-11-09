@@ -7,6 +7,7 @@ import io.spring.util.exception.ShelterAlreadyExistsException;
 import io.spring.util.exception.ShelterIsNotEmptyException;
 import io.spring.util.exception.UserHasNoShelterYetException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public interface ShelterService {
 
     Optional<Shelter> delete(Shelter shelter);
 
+    @Transactional
     Adoptee addAdoptee(CreateAdoptee adoptee) throws UserHasNoShelterYetException;
 
     List<Shelter> findAll();

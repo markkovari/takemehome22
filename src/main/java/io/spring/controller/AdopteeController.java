@@ -9,6 +9,8 @@ import io.spring.util.exception.UserHasNoShelterYetException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 @RestController
 @RequestMapping({"adoptees"})
 public class AdopteeController {
@@ -27,6 +29,7 @@ public class AdopteeController {
     }
 
     @PostMapping("/")
+    @Transactional
     public ResponseEntity<?> addAdoptee(@RequestBody CreateAdoptee createAdoptee) {
         try {
             Adoptee adoptee = shelterService.addAdoptee(createAdoptee);

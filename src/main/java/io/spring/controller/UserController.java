@@ -3,32 +3,31 @@ package io.spring.controller;
 import io.spring.dto.LoggedInUser;
 import io.spring.dto.Login;
 import io.spring.dto.Register;
+import io.spring.model.Adoptee;
 import io.spring.model.User;
+import io.spring.service.AdopteeService;
 import io.spring.service.UserService;
 import io.spring.util.exception.InvalidRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping({"users"})
 public class UserController {
     private final
     UserService userService;
+    private final
+    AdopteeService adopteeService;
 
-    @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AdopteeService adopteeService) {
         this.userService = userService;
+        this.adopteeService = adopteeService;
     }
 
-    @RequestMapping(path = "/", method = POST)
+    @PostMapping(path = "/")
     public ResponseEntity<?> createUser(@Valid @RequestBody Register register, BindingResult bindingResult) {
         userService.validateRegisterInput(register, bindingResult);
         User user = userService.createAndSave(register);
@@ -38,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(path = "/login", method = POST)
+    @PostMapping(path = "/login")
     public ResponseEntity<?> userLogin(@Valid @RequestBody Login login, BindingResult bindingResult) {
         userService.validateLogin(login, bindingResult);
         LoggedInUser loggedInUser = userService.getMatchingLoggedIdUser(login);
@@ -49,6 +48,15 @@ public class UserController {
         return ResponseEntity.ok(loggedInUser);
     }
 
+    @PostMapping(path = "togglelikeadoptee/{id}")
+    public ResponseEntity<?> toggleAdopteeById(@PathVariable(name = "id") Long id) {
+        try {
+            Adoptee toggled = adopteeService.toggleFavourite(id);
+            return ResponseEntity.ok(toggled);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
 
 

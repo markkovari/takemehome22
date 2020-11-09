@@ -8,10 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,6 +29,9 @@ public class Adoptee {
     @JsonIgnore
     @ManyToOne
     Shelter temporaryHome;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    List<User> favouriteBy;
 
     public Adoptee(CreateAdoptee createAdoptee) {
         this.color = createAdoptee.getColor();

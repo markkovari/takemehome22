@@ -75,7 +75,6 @@ public class ShelterServiceImpl implements ShelterService {
             throw new UserHasNoShelterYetException("User has no shelter registered yet");
         }
         Shelter toRegister = user.getShelter();
-
         List<Adoptee> adoptees = toRegister.getAdoptees();
         Adoptee adoptee = new Adoptee(newAdoptee);
         adoptees.add(adoptee);

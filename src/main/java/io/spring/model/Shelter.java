@@ -1,12 +1,14 @@
 package io.spring.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +28,8 @@ public class Shelter {
     @OneToOne
     Address address;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    List<Adoptee> adoptees;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY)
+    List<Adoptee> adoptees = new ArrayList<>();
 
 }

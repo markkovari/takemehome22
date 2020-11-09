@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,6 +19,10 @@ public class User {
     @JsonIgnore
     @OneToOne
     Shelter shelter;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    List<Adoptee> favourites;
 
     @Id
     @GeneratedValue
