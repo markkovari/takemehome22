@@ -6,6 +6,7 @@ import io.spring.model.User;
 import io.spring.util.exception.ShelterAlreadyExistsException;
 import io.spring.util.exception.ShelterIsNotEmptyException;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ShelterService {
@@ -17,4 +18,5 @@ public interface ShelterService {
 
     Shelter addAdoptee(Shelter shelter, Adoptee adoptee);
 
+    List<Shelter> findAll();
 }

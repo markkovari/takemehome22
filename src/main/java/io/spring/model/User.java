@@ -1,5 +1,6 @@
 package io.spring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    
+
     @OneToOne
     Shelter shelter;
 
@@ -23,6 +24,7 @@ public class User {
     private Long id;
     private String email;
     private String username;
+    @JsonIgnore
     private String password;
 
     public User(String email, String username, String password) {

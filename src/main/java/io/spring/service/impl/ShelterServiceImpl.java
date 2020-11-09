@@ -61,4 +61,9 @@ public class ShelterServiceImpl implements ShelterService {
         adopteeRepository.save(newAdoptee);
         return shelterRepository.save(shelter);
     }
+
+    @Override
+    public List<Shelter> findAll() {
+        return (List<Shelter>) shelterRepository.findAll();
+    }
 }
