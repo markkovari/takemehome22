@@ -1,6 +1,8 @@
 package io.spring.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.spring.dto.CreateAdoptee;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,12 @@ public class Adoptee {
 
     String color;
 
+    @JsonIgnore
     @ManyToOne
     Shelter temporaryHome;
 
+    public Adoptee(CreateAdoptee createAdoptee) {
+        this.color = createAdoptee.getColor();
+        this.name = createAdoptee.getName();
+    }
 }

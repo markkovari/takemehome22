@@ -26,7 +26,7 @@ public class Shelter {
     @OneToOne
     Address address;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     List<Adoptee> adoptees;
 
 }

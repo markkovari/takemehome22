@@ -1,5 +1,6 @@
 package io.spring.service.impl;
 
+import io.spring.dto.CreateAdoptee;
 import io.spring.model.Adoptee;
 import io.spring.model.Shelter;
 import io.spring.model.User;
@@ -9,6 +10,7 @@ import io.spring.repository.UserRepository;
 import io.spring.service.ShelterService;
 import io.spring.util.exception.ShelterAlreadyExistsException;
 import io.spring.util.exception.ShelterIsNotEmptyException;
+import io.spring.util.exception.UserHasNoShelterYetException;
 import io.spring.util.security.AuthorizationService;
 import org.springframework.stereotype.Service;
 
@@ -67,12 +69,21 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    public Shelter addAdoptee(Shelter shelter, Adoptee newAdoptee) {
-        List<Adoptee> adoptees = shelter.getAdoptees();
-        adoptees.add(newAdoptee);
-        shelter.setAdoptees(adoptees);
-        adopteeRepository.save(newAdoptee);
-        return shelterRepository.save(shelter);
+    public Adoptee addAdoptee(CreateAdoptee newAdoptee) throws UserHasNoShelterYetException {
+        User user = authorizationService.getUserByLoggedIn().orElse(null);
+        if (user == null || user.getShelter() == null) {
+            throw new UserHasNoShelterYetException("User has no shelter registered yet");
+        }
+        Shelter toRegister = user.getShelter();
+
+        List<Adoptee> adoptees = toRegister.getAdoptees();
+        Adoptee adoptee = new Adoptee(newAdoptee);
+        adoptees.add(adoptee);
+        toRegister.setAdoptees(adoptees);
+        adoptee.setTemporaryHome(toRegister);
+        Adoptee saved = adopteeRepository.save(adoptee);
+        shelterRepository.save(toRegister);
+        return saved;
     }
 
     @Override
