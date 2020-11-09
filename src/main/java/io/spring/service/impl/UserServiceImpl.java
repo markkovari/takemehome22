@@ -40,11 +40,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByUsername(register.getUsername()).isPresent()) {
             bindingResult.rejectValue("username", "DUPLICATED", "duplicated username");
         }
-
         if (userRepository.findByEmail(register.getEmail()).isPresent()) {
             bindingResult.rejectValue("email", "DUPLICATED", "duplicated email");
         }
-
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }

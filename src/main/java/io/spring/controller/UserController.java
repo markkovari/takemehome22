@@ -3,13 +3,11 @@ package io.spring.controller;
 import io.spring.dto.LoggedInUser;
 import io.spring.dto.Login;
 import io.spring.dto.Register;
-import io.spring.repository.UserRepository;
+import io.spring.model.User;
 import io.spring.service.UserService;
 import io.spring.util.exception.InvalidRequestException;
-import io.spring.util.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,26 +20,22 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @RequestMapping({"users"})
 public class UserController {
-    private UserRepository userRepository;
-    private UserService userService;
-    private JwtService jwtService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final
+    UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository,
-                          UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder,
-                          JwtService jwtService) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.jwtService = jwtService;
     }
 
     @RequestMapping(path = "/", method = POST)
     public ResponseEntity<?> createUser(@Valid @RequestBody Register register, BindingResult bindingResult) {
         userService.validateRegisterInput(register, bindingResult);
-        userService.createAndSave(register);
-        return ResponseEntity.status(201).build();
+        User user = userService.createAndSave(register);
+        if (user == null) {
+            ResponseEntity.badRequest().body(new Error("Cannot save user"));
+        }
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(path = "/login", method = POST)
