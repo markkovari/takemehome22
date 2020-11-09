@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/takemehome?serverTimezone=UTC
+    username: root
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+
+spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+server:
+  port: 8083
+
+jwt:
+  secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
+  sessionTime: 86400
