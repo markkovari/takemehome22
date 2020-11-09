@@ -27,4 +27,7 @@ public class Shelter {
     @OneToOne
     Address address;
 
+    @OneToMany
+    List<Adoptee> adoptees;
+
 }
